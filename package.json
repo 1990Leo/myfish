@@ -1,0 +1,24 @@
+{
+  "name": "smart-fish-tank",
+  "version": "1.0.0",
+  "description": "智能鱼缸监控系统 - IoT项目",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "init-db": "node server/models/init.js"
+  },
+  "keywords": [
+    "iot",
+    "fish-tank",
+    "smart-home"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "better-sqlite3": "^9.4.3",
+    "node-cron": "^3.0.3",
+    "cors": "^2.8.5"
+  }
+}

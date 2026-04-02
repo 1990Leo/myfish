@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能鱼缸控制系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 40 40" class="fish-logo">
+            <ellipse cx="20" cy="20" rx="15" ry="10" fill="currentColor"/>
+            <polygon points="35,20 42,14 42,26" fill="currentColor"/>
+            <circle cx="12" cy="18" r="2" fill="var(--deep-ocean)"/>
+          </svg>
+        </div>
+        <span class="brand-text">AquaSmart</span>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-link active" data-page="dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          <span>控制面板</span>
+        </a>
+        <a href="#" class="nav-link" data-page="settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>系统设置</span>
+        </a>
+      </div>
+      <div class="nav-status">
+        <div class="system-status" id="systemStatus">
+          <span class="status-dot"></span>
+          <span class="status-text">系统正常</span>
+        </div>
+        <div class="current-time" id="currentTime"></div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="page dashboard-page active" id="dashboardPage">
+        <section class="water-quality-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+              </svg>
+              水质监测
+            </h2>
+            <span class="last-update" id="waterLastUpdate">--</span>
+          </div>
+          <div class="water-cards">
+            <div class="water-card temperature-card">
+              <div class="card-bg-animation"></div>
+              <div class="card-content">
+                <div class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+                  </svg>
+                </div>
+                <div class="card-info">
+                  <span class="card-label">水温</span>
+                  <div class="card-value-group">
+                    <span class="card-value" id="temperature">--</span>
+                    <span class="card-unit">°C</span>
+                  </div>
+                  <div class="card-status normal" id="tempStatus">正常</div>
+                </div>
+                <div class="card-gauge">
+                  <canvas id="tempGauge" width="80" height="80"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="water-card ph-card">
+              <div class="card-bg-animation"></div>
+              <div class="card-content">
+                <div class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                </div>
+                <div class="card-info">
+                  <span class="card-label">pH值</span>
+                  <div class="card-value-group">
+                    <span class="card-value" id="ph">--</span>
+                  </div>
+                  <div class="card-status normal" id="phStatus">正常</div>
+                </div>
+                <div class="ph-scale">
+                  <div class="ph-indicator" id="phIndicator"></div>
+                  <div class="ph-labels">
+                    <span>酸</span>
+                    <span>中性</span>
+                    <span>碱</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="water-card oxygen-card">
+              <div class="card-bg-animation"></div>
+              <div class="card-content">
+                <div class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 12h8"/>
+                    <path d="M12 8v8"/>
+                  </svg>
+                </div>
+                <div class="card-info">
+                  <span class="card-label">溶解氧</span>
+                  <div class="card-value-group">
+                    <span class="card-value" id="oxygen">--</span>
+                    <span class="card-unit">mg/L</span>
+                  </div>
+                  <div class="card-status normal" id="oxygenStatus">正常</div>
+                </div>
+                <div class="oxygen-bubbles">
+                  <div class="bubble"></div>
+                  <div class="bubble"></div>
+                  <div class="bubble"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                <line x1="6" y1="6" x2="6.01" y2="6"/>
+                <line x1="6" y1="18" x2="6.01" y2="18"/>
+              </svg>
+              设备控制
+            </h2>
+          </div>
+          <div class="control-grid">
+            <div class="control-card feeder-control">
+              <div class="control-header">
+                <div class="control-icon-wrapper feeder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                    <line x1="6" y1="1" x2="6" y2="4"/>
+                    <line x1="10" y1="1" x2="10" y2="4"/>
+                    <line x1="14" y1="1" x2="14" y2="4"/>
+                  </svg>
+                </div>
+                <div class="control-title">
+                  <h3>自动喂食器</h3>
+                  <span class="control-subtitle" id="feederSubtitle">待机中</span>
+                </div>
+              </div>
+              <div class="control-body">
+                <div class="feed-control">
+                  <button class="btn-feed" id="feedBtn">
+                    <span class="btn-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20M2 12h20"/>
+                      </svg>
+                    </span>
+                    <span class="btn-text">手动喂食</span>
+                  </button>
+                  <div class="feed-amount-selector" id="feedAmountSelector">
+                    <span class="amount-label">投喂量</span>
+                    <div class="amount-options">
+                      <button class="amount-btn" data-amount="3">3g</button>
+                      <button class="amount-btn active" data-amount="5">5g</button>
+                      <button class="amount-btn" data-amount="8">8g</button>
+                      <button class="amount-btn" data-amount="10">10g</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="schedule-display">
+                  <span class="schedule-label">定时计划</span>
+                  <span class="schedule-value" id="feederSchedule">--</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-card lighting-control">
+              <div class="control-header">
+                <div class="control-icon-wrapper lighting" id="lightIconWrapper">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                  </svg>
+                </div>
+                <div class="control-title">
+                  <h3>灯光控制</h3>
+                  <span class="control-subtitle" id="lightSubtitle">已关闭</span>
+                </div>
+              </div>
+              <div class="control-body">
+                <div class="light-toggle-container">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="lightToggle">
+                    <span class="toggle-slider">
+                      <span class="toggle-icon off">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                      </span>
+                      <span class="toggle-icon on">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="12" cy="12" r="5"/>
+                          <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                          <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                          <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                          <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+                          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                      </span>
+                    </span>
+                  </label>
+                  <div class="light-status" id="lightStatus">OFF</div>
+                </div>
+                <div class="brightness-control">
+                  <span class="brightness-label">亮度</span>
+                  <input type="range" class="brightness-slider" id="brightnessSlider" min="0" max="100" value="100">
+                  <span class="brightness-value" id="brightnessValue">100%</span>
+                </div>
+                <div class="schedule-display">
+                  <span class="schedule-label">定时计划</span>
+                  <span class="schedule-value" id="lightSchedule">--</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-card waterlevel-control">
+              <div class="control-header">
+                <div class="control-icon-wrapper water">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                  </svg>
+                </div>
+                <div class="control-title">
+                  <h3>水位管理</h3>
+                  <span class="control-subtitle" id="waterLevelSubtitle">监测中</span>
+                </div>
+              </div>
+              <div class="control-body">
+                <div class="water-level-display">
+                  <div class="water-tank">
+                    <div class="tank-fill" id="tankFill">
+                      <div class="water-surface"></div>
+                    </div>
+                    <div class="tank-markers">
+                      <span class="marker high">100%</span>
+                      <span class="marker mid">50%</span>
+                      <span class="marker low">0%</span>
+                    </div>
+                  </div>
+                  <div class="level-info">
+                    <span class="level-value" id="waterLevel">--</span>
+                    <span class="level-unit">%</span>
+                    <span class="level-status" id="levelStatus">正常</span>
+                  </div>
+                </div>
+                <div class="refill-control">
+                  <button class="btn-refill" id="refillBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 2v20M2 12h20"/>
+                    </svg>
+                    <span>启动补水</span>
+                  </button>
+                  <button class="btn-stop-refill hidden" id="stopRefillBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="6" y="6" width="12" height="12"/>
+                    </svg>
+                    <span>停止补水</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="alarm-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              告警通知
+              <span class="alarm-badge hidden" id="alarmBadge">0</span>
+            </h2>
+            <button class="btn-clear-alarms" id="clearAlarmsBtn">清除全部</button>
+          </div>
+          <div class="alarm-list-container">
+            <ul class="alarm-list" id="alarmList">
+              <li class="alarm-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                  <line x1="9" y1="9" x2="9.01" y2="9"/>
+                  <line x1="15" y1="9" x2="15.01" y2="9"/>
+                </svg>
+                <span>暂无告警，系统运行正常</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <div class="page settings-page" id="settingsPage">
+        <section class="settings-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              系统设置
+            </h2>
+          </div>
+
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3 class="settings-card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                </svg>
+                喂食计划
+              </h3>
+              <div class="settings-form">
+                <div class="form-group">
+                  <label>喂食时间</label>
+                  <div class="time-inputs" id="feederTimeInputs">
+                    <div class="time-input-group">
+                      <input type="time" id="feedTime1" value="08:00">
+                      <input type="number" id="feedAmount1" value="5" min="1" max="20" placeholder="克">
+                    </div>
+                    <div class="time-input-group">
+                      <input type="time" id="feedTime2" value="18:00">
+                      <input type="number" id="feedAmount2" value="5" min="1" max="20" placeholder="克">
+                    </div>
+                  </div>
+                  <button class="btn-add-time" id="addFeedTimeBtn">+ 添加时间</button>
+                </div>
+                <div class="form-actions">
+                  <button class="btn-save" id="saveFeederBtn">保存设置</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3 class="settings-card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/>
+                  <line x1="12" y1="21" x2="12" y2="23"/>
+                </svg>
+                灯光计划
+              </h3>
+              <div class="settings-form">
+                <div class="form-group">
+                  <label>开启时间</label>
+                  <input type="time" id="lightOnTime" value="07:00">
+                </div>
+                <div class="form-group">
+                  <label>关闭时间</label>
+                  <input type="time" id="lightOffTime" value="22:00">
+                </div>
+                <div class="form-group">
+                  <label>默认亮度</label>
+                  <div class="slider-group">
+                    <input type="range" id="defaultBrightness" min="0" max="100" value="100">
+                    <span id="defaultBrightnessValue">100%</span>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn-save" id="saveLightingBtn">保存设置</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3 class="settings-card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                </svg>
+                水质阈值
+              </h3>
+              <div class="settings-form">
+                <div class="form-group">
+                  <label>温度范围 (°C)</label>
+                  <div class="range-inputs">
+                    <input type="number" id="tempMin" value="22" min="0" max="40">
+                    <span>~</span>
+                    <input type="number" id="tempMax" value="28" min="0" max="40">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>pH范围</label>
+                  <div class="range-inputs">
+                    <input type="number" id="phMin" value="6.5" min="0" max="14" step="0.1">
+                    <span>~</span>
+                    <input type="number" id="phMax" value="8.0" min="0" max="14" step="0.1">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>溶解氧最低值 (mg/L)</label>
+                  <input type="number" id="oxygenMin" value="5" min="0" max="20" step="0.1">
+                </div>
+                <div class="form-actions">
+                  <button class="btn-save" id="saveThresholdBtn">保存设置</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3 class="settings-card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+                系统信息
+              </h3>
+              <div class="system-info">
+                <div class="info-row">
+                  <span class="info-label">系统版本</span>
+                  <span class="info-value" id="systemVersion">v1.0.0</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">运行状态</span>
+                  <span class="info-value status-online" id="runStatus">运行中</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">数据刷新</span>
+                  <span class="info-value" id="refreshRate">5秒/次</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">上次同步</span>
+                  <span class="info-value" id="lastSync">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="modal-overlay hidden" id="modalOverlay">
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalTitle">提示</h3>
+          <button class="modal-close" id="modalClose">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
