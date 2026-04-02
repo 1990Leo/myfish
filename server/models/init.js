@@ -72,7 +72,7 @@ initConfig.run('feeder_schedule', JSON.stringify(['08:00', '12:00', '18:00']));
 initConfig.run('light_schedule', JSON.stringify({ on: '07:00', off: '22:00' }));
 initConfig.run('alarm_enabled', 'true');
 
-const initLight = db.prepare("INSERT OR NOT EXISTS INTO light_status (status, intensity) SELECT 'off', 100 WHERE NOT EXISTS (SELECT 1 FROM light_status)");
+const initLight = db.prepare("INSERT OR IGNORE INTO light_status (status, intensity) VALUES ('off', 100)");
 initLight.run();
 
 console.log('数据库初始化完成！');
