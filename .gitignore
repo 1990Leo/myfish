@@ -1,0 +1,17 @@
+# Database files
+data/fish_tank.db
+data/fish_tank.db-shm
+data/fish_tank.db-wal
+
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
